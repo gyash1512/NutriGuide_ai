@@ -44,7 +44,20 @@ const Home = () => {
         </div>
     </motion.div>
     </motion.div>
-
+    {/* Quote Section with Translucent Placeholder */}
+        <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 1 }}
+        className="mt-12 flex justify-center"
+        >
+        {/* Translucent Placeholder */}
+        <div className="bg-black bg-opacity-50 p-8 rounded-lg max-w-2xl w-full text-center">
+            <blockquote className="text-xl italic text-white">
+            "Health is not about the weight you lose, but the life you gain."
+            </blockquote>
+        </div>
+        </motion.div>
       {/* Key Features Section with Images */}
       <div className="mt-12">
         {/* Heading: Key Features */}

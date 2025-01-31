@@ -7,6 +7,7 @@ import Workout from "./pages/Workout";
 import ContactUs from "./pages/ContactUs";
 import AboutUs from "./pages/AboutUs";
 import Footer from "./components/Footer";
+
 const App = () => {
   return (
     <Router>

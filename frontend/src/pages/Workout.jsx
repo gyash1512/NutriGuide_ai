@@ -80,43 +80,30 @@ const WorkoutPage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      {/* Banner Section */}
-      <motion.div
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-        className="w-full relative mb-8"
-      >
-        {/* Banner Image */}
-        <img
-          src="../images/workout_banner.jpg" // Replace with your image URL
-          alt="Workout Plans"
-          className="w-full aspect-[7.1/3] object-cover rounded-lg shadow-lg"
-        />
-
-        {/* Banner Text */}
-        <div className="absolute inset-0 flex items-center justify-center p-8 bg-black bg-opacity-50 rounded-lg">
-          <div className="text-center max-w-md">
+                {/* Text-Only Banner Section */}
+                <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+            className="w-full text-center mb-12"
+        >
             <motion.h2
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-              className="text-3xl font-bold text-white"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            className="text-5xl font-bold text-gray-900 mb-4"
             >
-              Workout Plans
+            Workout Plans
             </motion.h2>
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-              className="mt-2 text-lg text-white"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1 }}
+            className="text-lg text-gray-600"
             >
-              Personalized workout plans, exercise tracking, and community challenges.
+            Personalized workout plans, exercise tracking, and community challenges.
             </motion.p>
-          </div>
-        </div>
-      </motion.div>
-
+        </motion.div>
       {/* Navigation Section */}
       <motion.div
         initial={{ opacity: 0, y: 50 }}

@@ -59,76 +59,64 @@ const MedicalDetails = () => {
 
   return (
     <div className="container mx-auto p-4">
-      {/* Banner Section */}
-      <motion.div
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-        className="w-full relative mb-8"
-      >
-        {/* Banner Image */}
-        <img
-          src="../images/medical_banner.jpg" // Replace with your image URL
-          alt="Medical Details"
-          className="w-full aspect-[7.1/3] object-cover rounded-lg shadow-lg"
-        />
-
-        {/* Banner Text */}
-        <div className="absolute inset-0 flex items-center justify-center p-8 bg-black bg-opacity-50 rounded-lg">
-          <div className="text-center max-w-md">
+        {/* Text-Only Banner Section */}
+        <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+            className="w-full text-center mb-12"
+        >
             <motion.h2
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-              className="text-3xl font-bold text-white"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            className="text-5xl font-bold text-gray-900 mb-4"
             >
-              Medical Details
+            Medical Details
             </motion.h2>
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-              className="mt-2 text-lg text-white"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1 }}
+            className="text-lg text-gray-600"
             >
-              Manage your health records, AI summaries, and appointments in one place.
+            Manage your health records, AI summaries, and appointments in one place.
             </motion.p>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Navigation Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 0.5 }}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-      >
-        {sections.map((section) => (
-          <motion.div
-            key={section.id}
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
-            className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
-            onClick={() => setActiveSection(activeSection === section.id ? null : section.id)}
-          >
-            <h3 className="text-xl font-bold mb-4">{section.title}</h3>
-            <p className="text-gray-600">{section.description}</p>
-          </motion.div>
-        ))}
-      </motion.div>
-
-      {/* Active Section Content */}
-      {activeSection && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mt-8"
-        >
-          {sections.find((section) => section.id === activeSection)?.content}
         </motion.div>
-      )}
-    </div>
+
+        {/* Navigation Section */}
+        <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.5 }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+            {sections.map((section) => (
+            <motion.div
+                key={section.id}
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.3 }}
+                className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+                onClick={() => setActiveSection(activeSection === section.id ? null : section.id)}
+            >
+                <h3 className="text-xl font-bold mb-4">{section.title}</h3>
+                <p className="text-gray-600">{section.description}</p>
+            </motion.div>
+            ))}
+        </motion.div>
+
+        {/* Active Section Content */}
+        {activeSection && (
+            <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mt-8"
+            >
+            {sections.find((section) => section.id === activeSection)?.content}
+            </motion.div>
+        )}
+        </div>
   );
 };
 

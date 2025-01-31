@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFacebook, faTwitter, faInstagram, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white py-12 mt-12">
@@ -63,7 +64,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white transition-colors duration-300"
               >
-                <i className="fab fa-facebook text-2xl"></i>
+                <FontAwesomeIcon icon={faFacebook} className="text-2xl" />
               </a>
               <a
                 href="https://twitter.com"
@@ -71,7 +72,8 @@ const Footer = () => {
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white transition-colors duration-300"
               >
-                <i className="fab fa-twitter text-2xl"></i>
+                <FontAwesomeIcon icon={faTwitter} className="text-2xl" />
+
               </a>
               <a
                 href="https://instagram.com"
@@ -79,7 +81,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white transition-colors duration-300"
               >
-                <i className="fab fa-instagram text-2xl"></i>
+                <FontAwesomeIcon icon={faInstagram} className="text-2xl" />
               </a>
               <a
                 href="https://linkedin.com"
@@ -87,7 +89,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white transition-colors duration-300"
               >
-                <i className="fab fa-linkedin text-2xl"></i>
+                <FontAwesomeIcon icon={faLinkedin} className="text-2xl" />
               </a>
             </div>
           </div>
