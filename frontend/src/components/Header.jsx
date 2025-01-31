@@ -14,7 +14,7 @@ const Header = () => {
         >
           <Link to="/">
             <img
-              src="../public/images/logo.svg" // Replace with your logo path
+              src="../images/logo.svg" // Replace with your logo path
               alt="Logo"
               className="h-12 w-auto" // Adjust size as needed
               href="../pages/Home.jsx" // Add link to your homepage

@@ -12,7 +12,7 @@ const Home = () => {
 >
   {/* Image */}
   <img
-    src="../public/images/home_main.png" // Replace with your image URL
+    src="../images/home_main.png" // Replace with your image URL
     alt="NutriGuide AI"
     className="w-full aspect-[7.1/3] object-cover rounded-lg shadow-lg" // Adjust aspect ratio as needed
   />
@@ -57,25 +57,25 @@ const Home = () => {
                 title: "Personalized Plans",
                 description:
                 "Get customized meal and exercise plans tailored to your goals.",
-                image: "../public/images/feature1.svg", // Replace with your image URL
+                image: "../images/feature1.svg", // Replace with your image URL
             },
             {
                 title: "AI-Powered Insights",
                 description:
                 "Leverage AI to analyze your habits and suggest improvements.",
-                image: "../public/images/feature2.svg", // Replace with your image URL
+                image: "../images/feature2.svg", // Replace with your image URL
             },
             {
                 title: "Track Progress",
                 description:
                 "Monitor your progress with detailed analytics and reports.",
-                image: "../public/images/feature3.svg", // Replace with your image URL
+                image: "../images/feature3.svg", // Replace with your image URL
             },
             {
                 title: "Community Support",
                 description:
                 "Join a community of like-minded individuals for motivation.",
-                image: "../public/images/feature4.svg", // Replace with your image URL
+                image: "../images/feature4.svg", // Replace with your image URL
             },
             ].map((feature, index) => (
                 <motion.div
