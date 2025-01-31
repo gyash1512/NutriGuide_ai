@@ -68,7 +68,7 @@ const MedicalDetails = () => {
       >
         {/* Banner Image */}
         <img
-          src="../public/images/medical_banner.jpg" // Replace with your image URL
+          src="../images/medical_banner.jpg" // Replace with your image URL
           alt="Medical Details"
           className="w-full aspect-[7.1/3] object-cover rounded-lg shadow-lg"
         />

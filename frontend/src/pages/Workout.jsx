@@ -89,7 +89,7 @@ const WorkoutPage = () => {
       >
         {/* Banner Image */}
         <img
-          src="../public/images/workout_banner.jpg" // Replace with your image URL
+          src="../images/workout_banner.jpg" // Replace with your image URL
           alt="Workout Plans"
           className="w-full aspect-[7.1/3] object-cover rounded-lg shadow-lg"
         />

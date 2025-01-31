@@ -107,7 +107,7 @@ const DietaryPage = () => {
       >
         {/* Banner Image */}
         <img
-          src="../public/images/dietary_banner.jpg" // Replace with your image URL
+          src="../images/dietary_banner.jpg" // Replace with your image URL
           alt="Dietary Recommendations"
           className="w-full aspect-[7.1/3] object-cover rounded-lg shadow-lg"
         />

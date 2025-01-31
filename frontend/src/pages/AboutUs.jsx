@@ -12,7 +12,7 @@ const AboutUsPage = () => {
       >
         {/* Banner Image */}
         <img
-          src="../public/images/about_us_banner.jpg" // Replace with your image URL
+          src="../images/about_us_banner.jpg" // Replace with your image URL
           alt="About Us"
           className="w-full aspect-[7.1/3] object-cover rounded-lg shadow-lg"
         />
