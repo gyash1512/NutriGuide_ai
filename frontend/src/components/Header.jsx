@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useAuth } from '../context/AuthContext'; // Import the useAuth hook
 
 const Header = () => {
+  const { user, logout } = useAuth(); // Get the user and logout function from the context
+
   return (
     <header className="bg-white shadow-md p-4">
       <div className="container mx-auto flex justify-between items-center">
@@ -17,7 +20,6 @@ const Header = () => {
               src="../images/logo.svg" // Replace with your logo path
               alt="Logo"
               className="h-12 w-auto" // Adjust size as needed
-              href="../pages/Home.jsx" // Add link to your homepage
             />
           </Link>
         </motion.div>
@@ -45,16 +47,35 @@ const Header = () => {
                 Workout
               </Link>
             </li>
-            {/* <li>
-              <Link to="/contact-us" className="hover:text-blue-500 transition-colors duration-300">
-                Contact Us
-              </Link>
-            </li> */}
             <li>
               <Link to="/about-us" className="hover:text-blue-500 transition-colors duration-300">
                 About Us
               </Link>
             </li>
+            {/* Show login/signup if user is not authenticated */}
+            {!user ? (
+              <>
+                <li>
+                  <Link to="/login" className="hover:text-blue-500 transition-colors duration-300">
+                    Login
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/signup" className="hover:text-blue-500 transition-colors duration-300">
+                    Signup
+                  </Link>
+                </li>
+              </>
+            ) : (
+              <li>
+                <button
+                  onClick={logout}
+                  className="hover:text-blue-500 transition-colors duration-300"
+                >
+                  Logout
+                </button>
+              </li>
+            )}
           </ul>
         </nav>
 
@@ -101,15 +122,34 @@ const Header = () => {
             </Link>
           </li>
           <li>
-            <Link to="/contact-us" className="hover:text-blue-500 transition-colors duration-300">
-              Contact Us
-            </Link>
-          </li>
-          <li>
             <Link to="/about-us" className="hover:text-blue-500 transition-colors duration-300">
               About Us
             </Link>
           </li>
+          {/* Show login/signup if user is not authenticated */}
+          {!user ? (
+            <>
+              <li>
+                <Link to="/login" className="hover:text-blue-500 transition-colors duration-300">
+                  Login
+                </Link>
+              </li>
+              <li>
+                <Link to="/signup" className="hover:text-blue-500 transition-colors duration-300">
+                  Signup
+                </Link>
+              </li>
+            </>
+          ) : (
+            <li>
+              <button
+                onClick={logout}
+                className="hover:text-blue-500 transition-colors duration-300"
+              >
+                Logout
+              </button>
+            </li>
+          )}
         </ul>
       </nav>
     </header>
