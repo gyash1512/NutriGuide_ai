@@ -33,7 +33,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: backend-artifact
-          path: backend
+          path: ./backend/
 
   deploy:
     runs-on: ubuntu-latest
