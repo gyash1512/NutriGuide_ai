@@ -66,3 +66,9 @@ jobs:
           app-name: 'nutriback'
           slot-name: 'Production'
           package: .
+      - name: Configure Azure to start app
+        run: |
+          # Azure automatically runs 'npm start' if it's specified in your package.json
+          echo "Setting up Node.js app to run automatically..."
+          echo "node -v"  # Optional: To check node version (confirm it’s installed)
+          echo "npm start"  # This is automatically triggered by Azure on deployment
