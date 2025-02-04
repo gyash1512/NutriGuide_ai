@@ -19,7 +19,7 @@ app.use(cors({
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*'); // Replace '*' with allowed domains if needed
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization, X-Auth-Token');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   next();
 });
