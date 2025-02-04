@@ -4,7 +4,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 
 // Import routes
-// import authRoutes from './routes/authRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 // import userRoutes from './routes/userRoutes.js';
 
 // Load environment variables
@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
 });
 
 // Routes
-// app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 // app.use('/api/users', userRoutes);
 
 // Start the server
