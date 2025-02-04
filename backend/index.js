@@ -12,7 +12,11 @@ dotenv.config();
 
 const app = express();
 app.use(express.json()); // Parse JSON request body
-app.use(cors()); // Enable CORS
+app.use(cors({
+  origin: ['http://localhost:5173',"https://nutriguideai.vercel.app/"], // Allow requests from React frontend
+  methods: 'GET, POST, PUT, DELETE',  // Allowed HTTP methods
+  credentials: true,  // If you need credentials (cookies, etc.)
+}));// Enable CORS
 
 // Database connection
 // import connectDB from './config/db.js';
