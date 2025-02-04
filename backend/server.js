@@ -23,6 +23,10 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   next();
 });
+
+app.get('/', (req, res) => {
+  res.send('NutriGuide AI Backend is up and running!');
+});
 // Routes
 app.use('/api/auth', authRoutes);
 
