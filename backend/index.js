@@ -4,7 +4,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 
 // Import routes
-import authRoutes from './routes/authRoutes.js';
+// import authRoutes from './routes/authRoutes.js';
 // import userRoutes from './routes/userRoutes.js';
 
 // Load environment variables
@@ -12,11 +12,7 @@ dotenv.config();
 
 const app = express();
 app.use(express.json()); // Parse JSON request body
-app.use(cors({
-  origin: ['http://localhost:5173',"https://nutriguideai.vercel.app/"], // Allow requests from React frontend
-  methods: 'GET, POST, PUT, DELETE',  // Allowed HTTP methods
-  credentials: true,  // If you need credentials (cookies, etc.)
-}));// Enable CORS
+app.use(cors()); // Enable CORS
 
 // Database connection
 // import connectDB from './config/db.js';
@@ -28,7 +24,7 @@ app.get('/', (req, res) => {
 });
 
 // Routes
-app.use('/api/auth', authRoutes);
+// app.use('/api/auth', authRoutes);
 // app.use('/api/users', userRoutes);
 
 // Start the server
