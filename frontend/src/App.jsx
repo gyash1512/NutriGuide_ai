@@ -23,7 +23,7 @@ const sendTokenToBackend = async () => {
 
     // Send the token to the backend
     // const response = await axios.post('http://localhost:5000/api/auth/verify-token', { token: idToken });
-    const response = await axios.post('https://nbutriback-drgegxgvd0bvdree.centralindia-01.azurewebsites.net/', { token: idToken });
+    const response = await axios.post('https://nbutriback-drgegxgvd0bvdree.centralindia-01.azurewebsites.net/api/auth/verify-token', { token: idToken });
   } catch (error) {
     console.error('Error sending token to backend:', error);
   }
