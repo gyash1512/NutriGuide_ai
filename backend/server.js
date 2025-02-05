@@ -7,14 +7,15 @@ const app = express();
 // Middleware
 
 app.use(express.json());
-
 // CORS middleware configuration
 app.use(cors({
-  origin: ['http://localhost:5173',"https://nutriguideai.vercel.app/"], // Allow requests from React frontend
+  origin: ['http://localhost:5173',"https://nutriguideai.vercel.app"], // Allow requests from React frontend
   methods: 'GET, POST, PUT, DELETE',  // Allowed HTTP methods
   credentials: true,  // If you need credentials (cookies, etc.)
 }));
 
+// Handle preflight requests
+app.options('*', cors()); // Enable preflight for all routes
 // Add COOP & COEP headers to all responses
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*'); // Replace '*' with allowed domains if needed
