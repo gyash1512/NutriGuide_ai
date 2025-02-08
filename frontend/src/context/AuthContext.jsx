@@ -20,19 +20,19 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const loginWithEmail = async (email, password) => {
-    await signInWithEmailAndPassword(auth, email, password);
+    return await signInWithEmailAndPassword(auth, email, password);
   };
 
   const loginWithGoogle = async () => {
-    await signInWithPopup(auth, googleProvider);
+    return await signInWithPopup(auth, googleProvider);
   };
 
   const signupWithEmail = async (email, password) => {
-    await createUserWithEmailAndPassword(auth, email, password);
+    return await createUserWithEmailAndPassword(auth, email, password);
   };
 
   const logout = async () => {
-    await signOut(auth);
+    return await signOut(auth);
   };
 
   return (

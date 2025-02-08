@@ -1,6 +1,9 @@
 import express from 'express';
-import cors from 'cors';  // Import cors package
-import authRoutes from './routes/authRoutes.js'; // Add .js extension for ES modules
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import authRoutes from './routes/authRoutes.js';
+dotenv.config();
 
 const app = express();
 
@@ -30,8 +33,19 @@ app.get('/', (req, res) => {
 });
 // Routes
 app.use('/api/auth', authRoutes);
+const MONGO_URI = process.env.MONGO_URI; // Load MongoDB URI from .env
+const PORT = process.env.PORT || 5000; // Load port from .env or default to 5000
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+mongoose.connect(MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+  .then(() => {
+    console.log('Connected to MongoDB');
+    app.listen(PORT, () => {
+      console.log('Server running on port', PORT);
+    });
+  })
+  .catch((err) => {
+    console.error('Failed to connect to MongoDB:', err);
+  });

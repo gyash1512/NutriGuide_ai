@@ -1,28 +1,38 @@
 import User from '../models/User.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import admin from 'firebase-admin';
 
 // Register User
 export const registerUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, dob, weight, height, gender } = req.body;
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await User.create({ name, email, password: hashedPassword });
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).json({ error: 'User already exists' });
+
+    // Hash the password before saving
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const newUser = await User.create({
+      name, email, password: hashedPassword, dob, weight, height, gender
+    });
 
     res.status(201).json({ message: 'User registered successfully', user: newUser });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Registration failed' });
   }
 };
+
 
 // Login User
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find user
+    // Find user in MongoDB
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ error: 'Invalid email or password' });
 
@@ -37,4 +47,15 @@ export const loginUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'Login failed' });
   }
+};
+export const verifyToken = async (req, res) => {
+  const { token } = req.body;
+
+  try {
+      const decodedToken = await admin.auth().verifyIdToken(token);
+      res.status(200).json({ uid: decodedToken.uid, email: decodedToken.email });
+    } catch (error) {
+      console.error('Error verifying token:', error);
+      res.status(401).json({ error: 'Invalid token' });
+    }
 };

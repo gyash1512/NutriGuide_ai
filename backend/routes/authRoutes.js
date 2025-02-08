@@ -1,18 +1,10 @@
 import express from 'express';
 import admin from '../config/firebaseAdmin.js'; // Add .js extension
+import { registerUser, loginUser, verifyToken } from '../controllers/authController.js';
 
 const router = express.Router();
-
-router.post('/verify-token', async (req, res) => {
-  const { token } = req.body;
-
-  try {
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    res.status(200).json({ uid: decodedToken.uid, email: decodedToken.email });
-  } catch (error) {
-    console.error('Error verifying token:', error);
-    res.status(401).json({ error: 'Invalid token' });
-  }
-});
+router.post('/register', registerUser);
+router.post('/login', loginUser);
+router.post('/verify-token', verifyToken);
 
 export default router;

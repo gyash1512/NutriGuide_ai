@@ -22,12 +22,12 @@ const sendTokenToBackend = async () => {
     const idToken = await auth.currentUser.getIdToken();
 
     // Send the token to the backend
-    // const response = await axios.post('http://localhost:5000/api/auth/verify-token', { token: idToken });
-    const response = await axios.post('https://nbutriback-drgegxgvd0bvdree.centralindia-01.azurewebsites.net/api/auth/verify-token', { token: idToken });
+    await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/verify-token`, { token: idToken });
   } catch (error) {
     console.error('Error sending token to backend:', error);
   }
 };
+
 
 const App = () => {
   const [user, setUser] = useState(null);
