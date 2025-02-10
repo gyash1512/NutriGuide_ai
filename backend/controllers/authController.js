@@ -2,6 +2,7 @@ import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import admin from 'firebase-admin';
+import { addUser } from "../controllers/userController.js"; // SQL addUser function
 
 // Register User
 export const registerUser = async (req, res) => {
@@ -18,7 +19,12 @@ export const registerUser = async (req, res) => {
     const newUser = await User.create({
       name, email, password: hashedPassword, dob, weight, height, gender
     });
-
+    // Call addUser to insert name and email into SQL users table
+    addUser({ body: { name, email } }, {
+      status: (code) => ({
+        json: (data) => console.log(`SQL Insert Status ${code}:`, data),
+      }),
+    });
     res.status(201).json({ message: 'User registered successfully', user: newUser });
   } catch (error) {
     console.error(error);
