@@ -18,7 +18,11 @@ const WorkoutPage = () => {
       if (!email) return;
 
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/gemini/saved-workout-plan/${email}`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/gemini/saved-workout-plan/${email}`, {
+          headers: {
+            'ngrok-skip-browser-warning': 'true',
+          },
+        });
         const data = await response.json();
         if (data.workoutPlan) {
           setWorkoutPlan(data.workoutPlan);
@@ -46,6 +50,7 @@ const WorkoutPage = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'true',
       },
       body: JSON.stringify({ email, fitnessLevel, goals, otherNotes })
     })

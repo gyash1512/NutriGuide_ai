@@ -18,7 +18,11 @@ const DietaryPage = () => {
       if (!email) return;
 
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/gemini/saved-diet-plan/${email}`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/gemini/saved-diet-plan/${email}`, {
+          headers: {
+            'ngrok-skip-browser-warning': 'true',
+          },
+        });
         const data = await response.json();
         if (data.dietPlan) {
           setDietPlan(data.dietPlan);
@@ -46,6 +50,7 @@ const DietaryPage = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'true',
       },
       body: JSON.stringify({ email, location, dietaryPreference, otherNotes })
     })

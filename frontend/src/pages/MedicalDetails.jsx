@@ -198,6 +198,7 @@ const MedicalDetails = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          'ngrok-skip-browser-warning': 'true',
         },
         body: JSON.stringify(requestBody),
       });      
@@ -343,7 +344,11 @@ const MedicalDetails = () => {
                 return;
               }
               try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL}/api/gemini/health-summary/${email}`);
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/api/gemini/health-summary/${email}`, {
+                  headers: {
+                    'ngrok-skip-browser-warning': 'true',
+                  },
+                });
                 const data = await response.json();
                 if (response.ok) {
                   setAiSummary(data.analysis);
