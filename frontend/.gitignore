@@ -169,3 +169,4 @@ dist
 .pnp.*
 
 .env
+*/service_account.json

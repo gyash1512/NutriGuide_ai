@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { auth } from "../firebase"; // Adjust the path based on your project structure
 
 // Available blood test categories mapped with their fields
@@ -144,6 +146,8 @@ const MedicalDetails = () => {
   const [activeSection, setActiveSection] = useState(null);
   const [selectedTest, setSelectedTest] = useState(null);
   const [testData, setTestData] = useState(getFromLocalStorage());
+  const [aiSummary, setAiSummary] = useState("");
+  const [loadingSummary, setLoadingSummary] = useState(false);
 
   const handleSectionClick = (section) => {
     setActiveSection((prev) => (prev === section ? null : section)); // Toggle section
@@ -329,7 +333,39 @@ const MedicalDetails = () => {
       {activeSection === "aiSummary" && (
         <div className="mt-8 p-6 bg-gray-50 rounded-lg">
           <h4 className="text-xl font-semibold mb-4">AI Health Summary</h4>
-          <p className="text-gray-700">Your AI-generated health summary will appear here.</p>
+          <button
+            onClick={async () => {
+              setLoadingSummary(true);
+              const email = auth.currentUser?.email;
+              if (!email) {
+                alert("User email not found. Please log in again.");
+                setLoadingSummary(false);
+                return;
+              }
+              try {
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/api/gemini/health-summary/${email}`);
+                const data = await response.json();
+                if (response.ok) {
+                  setAiSummary(data.analysis);
+                } else {
+                  throw new Error(data.error || "Failed to fetch summary");
+                }
+              } catch (error) {
+                alert("An error occurred while fetching the summary.");
+                console.error("Summary error:", error);
+              }
+              setLoadingSummary(false);
+            }}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300"
+            disabled={loadingSummary}
+          >
+            {loadingSummary ? "Generating..." : "Generate AI Health Summary"}
+          </button>
+          {aiSummary && (
+            <div className="mt-4 p-4 bg-white rounded-lg shadow-md">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{aiSummary}</ReactMarkdown>
+            </div>
+          )}
         </div>
       )}
 

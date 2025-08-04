@@ -167,6 +167,24 @@ conn.connect((err) => {
         beta_hcg FLOAT,
         FOREIGN KEY (email) REFERENCES users(email) ON DELETE CASCADE
       );
+    `,
+    meal_plans: `
+      CREATE TABLE IF NOT EXISTS meal_plans (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        email VARCHAR(255) NOT NULL,
+        plan TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (email) REFERENCES users(email) ON DELETE CASCADE
+      );
+    `,
+    workout_plans: `
+      CREATE TABLE IF NOT EXISTS workout_plans (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        email VARCHAR(255) NOT NULL,
+        plan TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (email) REFERENCES users(email) ON DELETE CASCADE
+      );
     `
   };
 
