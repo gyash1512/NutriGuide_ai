@@ -1,11 +1,66 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { auth } from '../firebase';
 
 const WorkoutPage = () => {
-  // State to manage which section is open
   const [activeSection, setActiveSection] = useState(null);
+  const [fitnessLevel, setFitnessLevel] = useState('beginner');
+  const [goals, setGoals] = useState('');
+  const [otherNotes, setOtherNotes] = useState('');
+  const [workoutPlan, setWorkoutPlan] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  // Sections data
+  useEffect(() => {
+    const fetchSavedWorkoutPlan = async () => {
+      const email = auth.currentUser?.email;
+      if (!email) return;
+
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/gemini/saved-workout-plan/${email}`);
+        const data = await response.json();
+        if (data.workoutPlan) {
+          setWorkoutPlan(data.workoutPlan);
+        }
+      } catch (error) {
+        console.error('Error fetching saved workout plan:', error);
+      }
+    };
+
+    if (activeSection === 'workout-plans') {
+      fetchSavedWorkoutPlan();
+    }
+  }, [activeSection]);
+
+  const handleGetWorkoutPlan = () => {
+    setLoading(true);
+    const email = auth.currentUser?.email;
+    if (!email) {
+      alert("User email not found. Please log in again.");
+      setLoading(false);
+      return;
+    }
+
+    fetch(`${import.meta.env.VITE_API_URL}/api/gemini/get-workout-plan`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, fitnessLevel, goals, otherNotes })
+    })
+    .then(res => res.json())
+    .then(data => {
+      setWorkoutPlan(data.workoutPlan);
+      setLoading(false);
+    })
+    .catch(error => {
+      console.error('Error getting workout plan:', error);
+      setWorkoutPlan('Error: Could not get workout plan.');
+      setLoading(false);
+    });
+  };
+
   const sections = [
     {
       id: "workout-plans",
@@ -13,18 +68,53 @@ const WorkoutPage = () => {
       description: "Get personalized workout plans tailored to your fitness goals.",
       content: (
         <div className="mt-6 p-6 bg-gray-50 rounded-lg">
-          <h4 className="text-xl font-semibold mb-4">Your Workout Plan</h4>
-          <p className="text-gray-600">
-            Based on your fitness level and goals, here is your weekly workout plan:
-          </p>
-          <ul className="mt-4 list-disc list-inside text-gray-600">
-            <li>Monday: Cardio (30 mins)</li>
-            <li>Wednesday: Strength Training (45 mins)</li>
-            <li>Friday: Yoga & Stretching (30 mins)</li>
-          </ul>
-          <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300">
-            View Full Plan
+          <div className="mb-4">
+            <label className="block text-gray-700 font-semibold mb-2">Fitness Level</label>
+            <select
+              className="w-full p-2 border border-gray-300 rounded-lg"
+              value={fitnessLevel}
+              onChange={(e) => setFitnessLevel(e.target.value)}
+            >
+              <option value="beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="advanced">Advanced</option>
+            </select>
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-gray-700 font-semibold mb-2">Goals (e.g., "lose weight", "build muscle")</label>
+            <input
+              type="text"
+              className="w-full p-2 border border-gray-300 rounded-lg"
+              value={goals}
+              onChange={(e) => setGoals(e.target.value)}
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-gray-700 font-semibold mb-2">Other Notes (e.g., "focus on legs", "no equipment")</label>
+            <textarea
+              className="w-full p-2 border border-gray-300 rounded-lg"
+              rows="4"
+              value={otherNotes}
+              onChange={(e) => setOtherNotes(e.target.value)}
+            ></textarea>
+          </div>
+
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded mt-4"
+            onClick={handleGetWorkoutPlan}
+            disabled={loading}
+          >
+            {loading ? 'Generating...' : 'Get New Workout Plan'}
           </button>
+
+          {workoutPlan && (
+            <div className="mt-8 p-6 bg-white rounded-lg shadow-md">
+              <h2 className="text-xl font-bold mb-2">Your 7-Day Workout Plan</h2>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{workoutPlan}</ReactMarkdown>
+            </div>
+          )}
         </div>
       ),
     },

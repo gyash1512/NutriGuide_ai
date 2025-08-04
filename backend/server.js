@@ -4,6 +4,9 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import mealPlanRoutes from './routes/mealPlanRoutes.js';
+import geminiRoutes from './routes/geminiRoutes.js';
+import { conn } from './config/db.js'; // Import MySQL connection
 
 dotenv.config();
 
@@ -36,6 +39,8 @@ app.get('/', (req, res) => {
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/meal-plans', mealPlanRoutes);
+app.use('/api/gemini', geminiRoutes);
 const MONGO_URI = process.env.MONGO_URI; // Load MongoDB URI from .env
 const PORT = process.env.PORT || 5000; // Load port from .env or default to 5000
 

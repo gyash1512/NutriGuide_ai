@@ -1,4 +1,4 @@
-import { insertData } from "../config/db.js"; // Import the insertData function from db.js
+import { conn, insertData } from "../config/db.js"; // Import the conn and insertData function from db.js
 
 /**
  * Controller to add a new user to the 'users' table.
@@ -25,6 +25,56 @@ export const addUser = (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
+};
+
+export const getMedicalDataForAnalysis = (req, res) => {
+  const { email } = req.params;
+  const tables = [
+    "complete_blood_count",
+    "lipid_panel",
+    "liver_function",
+    "kidney_function",
+    "blood_sugar",
+    "thyroid_function",
+    "vitamin_levels",
+    "inflammatory_markers",
+    "coagulation_tests",
+    "cancer_markers"
+  ];
+
+  const medicalData = {};
+  let queries = tables.length;
+
+  tables.forEach(table => {
+    const query = `SELECT * FROM ${table} WHERE email = ?`;
+    conn.query(query, [email], (err, result) => {
+      if (err) {
+        console.error(`Error fetching data from ${table}:`, err);
+        queries--;
+        if (queries === 0) {
+          res.status(200).json(medicalData);
+        }
+        return;
+      }
+
+      if (result.length > 0) {
+        const filteredResult = {};
+        for (const key in result[0]) {
+          if (result[0][key] !== null && result[0][key] !== '' && key !== 'email') {
+            filteredResult[key] = result[0][key];
+          }
+        }
+        if (Object.keys(filteredResult).length > 0) {
+          medicalData[table] = filteredResult;
+        }
+      }
+
+      queries--;
+      if (queries === 0) {
+        res.status(200).json(medicalData);
+      }
+    });
+  });
 };
 
 /**

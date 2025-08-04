@@ -1,11 +1,66 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { auth } from '../firebase';
 
 const DietaryPage = () => {
-  // State to manage which section is open
   const [activeSection, setActiveSection] = useState(null);
+  const [location, setLocation] = useState('');
+  const [dietaryPreference, setDietaryPreference] = useState('vegetarian');
+  const [otherNotes, setOtherNotes] = useState('');
+  const [dietPlan, setDietPlan] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  // Sections data
+  useEffect(() => {
+    const fetchSavedDietPlan = async () => {
+      const email = auth.currentUser?.email;
+      if (!email) return;
+
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/gemini/saved-diet-plan/${email}`);
+        const data = await response.json();
+        if (data.dietPlan) {
+          setDietPlan(data.dietPlan);
+        }
+      } catch (error) {
+        console.error('Error fetching saved diet plan:', error);
+      }
+    };
+
+    if (activeSection === 'recommendations') {
+      fetchSavedDietPlan();
+    }
+  }, [activeSection]);
+
+  const handleGetDietPlan = () => {
+    setLoading(true);
+    const email = auth.currentUser?.email;
+    if (!email) {
+      alert("User email not found. Please log in again.");
+      setLoading(false);
+      return;
+    }
+
+    fetch(`${import.meta.env.VITE_API_URL}/api/gemini/get-diet-plan`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, location, dietaryPreference, otherNotes })
+    })
+    .then(res => res.json())
+    .then(data => {
+      setDietPlan(data.dietPlan);
+      setLoading(false);
+    })
+    .catch(error => {
+      console.error('Error getting diet plan:', error);
+      setDietPlan('Error: Could not get diet plan.');
+      setLoading(false);
+    });
+  };
+
   const sections = [
     {
       id: "recommendations",
@@ -13,18 +68,53 @@ const DietaryPage = () => {
       description: "Get personalized dietary recommendations based on your health goals.",
       content: (
         <div className="mt-6 p-6 bg-gray-50 rounded-lg">
-          <h4 className="text-xl font-semibold mb-4">Your Dietary Plan</h4>
-          <p className="text-gray-600">
-            Based on your health data, here are your recommended meals for the week:
-          </p>
-          <ul className="mt-4 list-disc list-inside text-gray-600">
-            <li>Breakfast: Oatmeal with fruits</li>
-            <li>Lunch: Grilled chicken salad</li>
-            <li>Dinner: Quinoa with roasted vegetables</li>
-          </ul>
-          <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300">
-            View Full Plan
+          <div className="mb-4">
+            <label className="block text-gray-700 font-semibold mb-2">Location (for local cuisine suggestions)</label>
+            <input
+              type="text"
+              className="w-full p-2 border border-gray-300 rounded-lg"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-gray-700 font-semibold mb-2">Dietary Preference</label>
+            <select
+              className="w-full p-2 border border-gray-300 rounded-lg"
+              value={dietaryPreference}
+              onChange={(e) => setDietaryPreference(e.target.value)}
+            >
+              <option value="vegetarian">Vegetarian</option>
+              <option value="non-vegetarian">Non-Vegetarian</option>
+              <option value="vegan">Vegan</option>
+            </select>
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-gray-700 font-semibold mb-2">Other Notes (e.g., "more liquid", "avoid spicy food")</label>
+            <textarea
+              className="w-full p-2 border border-gray-300 rounded-lg"
+              rows="4"
+              value={otherNotes}
+              onChange={(e) => setOtherNotes(e.target.value)}
+            ></textarea>
+          </div>
+
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded mt-4"
+            onClick={handleGetDietPlan}
+            disabled={loading}
+          >
+            {loading ? 'Generating...' : 'Get New Diet Plan'}
           </button>
+
+          {dietPlan && (
+            <div className="mt-8 p-6 bg-white rounded-lg shadow-md">
+              <h2 className="text-xl font-bold mb-2">Your 7-Day Diet Plan</h2>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{dietPlan}</ReactMarkdown>
+            </div>
+          )}
         </div>
       ),
     },

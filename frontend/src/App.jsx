@@ -10,6 +10,7 @@ import AboutUs from "./pages/AboutUs";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Footer from "./components/Footer";
+import Chatbot from "./components/Chatbot"; // Import the Chatbot component
 import { auth } from "./firebase"; // Import auth from Firebase
 import axios from "axios";
 import { AuthProvider } from './context/AuthContext';
@@ -54,6 +55,7 @@ const App = () => {
           <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
           <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" />} />
         </Routes>
+        <Chatbot />
         <Footer />
       </AuthProvider>
     </Router>
