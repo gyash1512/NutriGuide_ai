@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { auth } from '../firebase';
+import Loader from '../components/Loader';
 
 const DietaryPage = () => {
   const [activeSection, setActiveSection] = useState(null);
@@ -111,7 +112,7 @@ const DietaryPage = () => {
             onClick={handleGetDietPlan}
             disabled={loading}
           >
-            {loading ? 'Generating...' : 'Get New Diet Plan'}
+            {loading ? <Loader /> : 'Get New Diet Plan'}
           </button>
 
           {dietPlan && (

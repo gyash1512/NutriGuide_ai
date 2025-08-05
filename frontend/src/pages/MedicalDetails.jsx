@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { auth } from "../firebase"; // Adjust the path based on your project structure
+import Loader from '../components/Loader';
 
 // Available blood test categories mapped with their fields
 // Available blood test categories mapped with their fields
@@ -163,10 +164,10 @@ const MedicalDetails = () => {
         const data = await response.json();
         if (response.ok) {
           const formattedData = {};
-          for (const test in data) {
-            const testName = Object.keys(bloodTestFields).find(key => bloodTestFields[key].table === test);
+          for (const testTable in data) {
+            const testName = Object.keys(bloodTestFields).find(key => bloodTestFields[key].table === testTable);
             if (testName) {
-              formattedData[testName] = data[test];
+              formattedData[testName] = data[testTable];
             }
           }
           setTestData(formattedData);
@@ -180,7 +181,7 @@ const MedicalDetails = () => {
     };
 
     fetchMedicalProfile();
-  }, []);
+  }, [auth.currentUser]);
 
   const handleSectionClick = (section) => {
     setActiveSection((prev) => (prev === section ? null : section)); // Toggle section
@@ -397,7 +398,7 @@ const MedicalDetails = () => {
             className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300"
             disabled={loadingSummary}
           >
-            {loadingSummary ? "Generating..." : "Generate AI Health Summary"}
+            {loadingSummary ? <Loader /> : "Generate AI Health Summary"}
           </button>
           {aiSummary && (
             <div className="mt-4 p-4 bg-white rounded-lg shadow-md">

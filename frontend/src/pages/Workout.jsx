@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { auth } from '../firebase';
+import Loader from '../components/Loader';
 
 const WorkoutPage = () => {
   const [activeSection, setActiveSection] = useState(null);
@@ -111,7 +112,7 @@ const WorkoutPage = () => {
             onClick={handleGetWorkoutPlan}
             disabled={loading}
           >
-            {loading ? 'Generating...' : 'Get New Workout Plan'}
+            {loading ? <Loader /> : 'Get New Workout Plan'}
           </button>
 
           {workoutPlan && (
