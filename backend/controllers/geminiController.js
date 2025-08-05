@@ -1,6 +1,8 @@
 import generativeModel from '../config/gemini.js';
 import { getMedicalDataForAnalysis } from './userController.js';
-import { conn, insertData } from '../config/db.js';
+import MealPlan from '../models/MealPlan.js';
+import WorkoutPlan from '../models/WorkoutPlan.js';
+import MedicalData from '../models/MedicalData.js';
 
 export const getAIHealthSummary = async (req, res) => {
   try {
@@ -18,6 +20,10 @@ export const getAIHealthSummary = async (req, res) => {
           const result = await generativeModel.generateContent(prompt);
           const response = result.response;
           const text = response.candidates[0].content.parts[0].text;
+
+          // Save the summary to the database
+          await MedicalData.findOneAndUpdate({ email: req.params.email }, { ai_health_summary: text }, { upsert: true });
+
           res.json({ analysis: text });
         }
       })
@@ -32,118 +38,106 @@ export const getWorkoutPlan = async (req, res) => {
   try {
     const { email, fitnessLevel, goals, otherNotes } = req.body;
 
-    // Create a mock request object for getMedicalDataForAnalysis
-    const mockReq = { params: { email } };
+    const medicalData = await MedicalData.findOne({ email });
 
-    getMedicalDataForAnalysis(mockReq, {
-      status: (code) => ({
-        json: async (medicalData) => {
-          let prompt = `Generate a 7-day workout plan.`;
+    let prompt = `Generate a 7-day workout plan.`;
 
-          if (Object.keys(medicalData).length > 0) {
-            prompt += `\n\nHere is the user's medical data for context:\n${JSON.stringify(medicalData, null, 2)}`;
-          }
-
-          prompt += `\n\nPlease consider the following user preferences:\n`;
-          if (fitnessLevel) prompt += `- Fitness Level: ${fitnessLevel}\n`;
-          if (goals) prompt += `- Goals: ${goals}\n`;
-          if (otherNotes) prompt += `- Other important notes: ${otherNotes}\n`;
-
-          const result = await generativeModel.generateContent(prompt);
-          const response = result.response;
-          const text = response.candidates[0].content.parts[0].text;
-
-          // Save the new workout plan to the database
-          insertData('workout_plans', { email, plan: text }, (err, result) => {
-            if (err) {
-              console.error('Error saving workout plan:', err);
-              // Still return the workout plan to the user even if saving fails
-              return res.json({ workoutPlan: text });
-            }
-            res.json({ workoutPlan: text });
-          });
+    if (medicalData) {
+      const curatedData = {};
+      for (const key in medicalData.toObject()) {
+        if (medicalData[key] !== null && key !== 'email' && key !== '_id' && key !== '__v' && key !== 'createdAt' && key !== 'updatedAt') {
+          curatedData[key] = medicalData[key];
         }
-      })
-    });
+      }
+      if (Object.keys(curatedData).length > 0) {
+        prompt += `\n\nHere is the user's medical data for context:\n${JSON.stringify(curatedData, null, 2)}`;
+      }
+    }
+
+    prompt += `\n\nPlease consider the following user preferences:\n`;
+    if (fitnessLevel) prompt += `- Fitness Level: ${fitnessLevel}\n`;
+    if (goals) prompt += `- Goals: ${goals}\n`;
+    if (otherNotes) prompt += `- Other important notes: ${otherNotes}\n`;
+
+    const result = await generativeModel.generateContent(prompt);
+    const response = result.response;
+    const text = response.candidates[0].content.parts[0].text;
+
+    await WorkoutPlan.findOneAndUpdate({ email }, { plan: text }, { upsert: true, new: true });
+
+    res.json({ workoutPlan: text });
   } catch (error) {
     console.error('Error in getWorkoutPlan:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
 
-export const getSavedWorkoutPlan = (req, res) => {
-  const { email } = req.params;
-  const query = "SELECT plan FROM workout_plans WHERE email = ? ORDER BY created_at DESC LIMIT 1";
-  conn.query(query, [email], (err, result) => {
-    if (err) {
-      console.error('Error fetching saved workout plan:', err);
-      return res.status(500).json({ message: 'Server error' });
-    }
-    if (result.length > 0) {
-      res.json({ workoutPlan: result[0].plan });
+export const getSavedWorkoutPlan = async (req, res) => {
+  try {
+    const { email } = req.params;
+    const workoutPlan = await WorkoutPlan.findOne({ email }).sort({ createdAt: -1 });
+    if (workoutPlan) {
+      res.json({ workoutPlan: workoutPlan.plan });
     } else {
       res.json({ workoutPlan: null });
     }
-  });
+  } catch (error) {
+    console.error('Error fetching saved workout plan:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 };
 
 export const getDietPlan = async (req, res) => {
   try {
     const { email, location, dietaryPreference, otherNotes } = req.body;
 
-    // Create a mock request object for getMedicalDataForAnalysis
-    const mockReq = { params: { email } };
+    const medicalData = await MedicalData.findOne({ email });
 
-    getMedicalDataForAnalysis(mockReq, {
-      status: (code) => ({
-        json: async (medicalData) => {
-          let prompt = `Generate a 7-day diet plan.`;
+    let prompt = `Generate a 7-day diet plan.`;
 
-          if (Object.keys(medicalData).length > 0) {
-            prompt += `\n\nHere is the user's medical data for context:\n${JSON.stringify(medicalData, null, 2)}`;
-          }
-
-          prompt += `\n\nPlease consider the following user preferences:\n`;
-          if (location) prompt += `- Location for local cuisine suggestions: ${location}\n`;
-          if (dietaryPreference) prompt += `- Dietary Preference: ${dietaryPreference}\n`;
-          if (otherNotes) prompt += `- Other important notes: ${otherNotes}\n`;
-          
-          const result = await generativeModel.generateContent(prompt);
-          const response = result.response;
-          const text = response.candidates[0].content.parts[0].text;
-
-          // Save the new diet plan to the database
-          insertData('meal_plans', { email, plan: text }, (err, result) => {
-            if (err) {
-              console.error('Error saving diet plan:', err);
-              // Still return the diet plan to the user even if saving fails
-              return res.json({ dietPlan: text });
-            }
-            res.json({ dietPlan: text });
-          });
+    if (medicalData) {
+      const curatedData = {};
+      for (const key in medicalData.toObject()) {
+        if (medicalData[key] !== null && key !== 'email' && key !== '_id' && key !== '__v' && key !== 'createdAt' && key !== 'updatedAt') {
+          curatedData[key] = medicalData[key];
         }
-      })
-    });
+      }
+      if (Object.keys(curatedData).length > 0) {
+        prompt += `\n\nHere is the user's medical data for context:\n${JSON.stringify(curatedData, null, 2)}`;
+      }
+    }
+
+    prompt += `\n\nPlease consider the following user preferences:\n`;
+    if (location) prompt += `- Location for local cuisine suggestions: ${location}\n`;
+    if (dietaryPreference) prompt += `- Dietary Preference: ${dietaryPreference}\n`;
+    if (otherNotes) prompt += `- Other important notes: ${otherNotes}\n`;
+    
+    const result = await generativeModel.generateContent(prompt);
+    const response = result.response;
+    const text = response.candidates[0].content.parts[0].text;
+
+    await MealPlan.findOneAndUpdate({ email }, { plan: text }, { upsert: true, new: true });
+
+    res.json({ dietPlan: text });
   } catch (error) {
     console.error('Error in getDietPlan:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
 
-export const getSavedDietPlan = (req, res) => {
-  const { email } = req.params;
-  const query = "SELECT plan FROM meal_plans WHERE email = ? ORDER BY created_at DESC LIMIT 1";
-  conn.query(query, [email], (err, result) => {
-    if (err) {
-      console.error('Error fetching saved diet plan:', err);
-      return res.status(500).json({ message: 'Server error' });
-    }
-    if (result.length > 0) {
-      res.json({ dietPlan: result[0].plan });
+export const getSavedDietPlan = async (req, res) => {
+  try {
+    const { email } = req.params;
+    const mealPlan = await MealPlan.findOne({ email }).sort({ createdAt: -1 });
+    if (mealPlan) {
+      res.json({ dietPlan: mealPlan.plan });
     } else {
       res.json({ dietPlan: null });
     }
-  });
+  } catch (error) {
+    console.error('Error fetching saved diet plan:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 };
 
 export const chatWithAI = async (req, res) => {

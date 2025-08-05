@@ -6,7 +6,7 @@ import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import mealPlanRoutes from './routes/mealPlanRoutes.js';
 import geminiRoutes from './routes/geminiRoutes.js';
-import { conn } from './config/db.js'; // Import MySQL connection
+import connectDB from './config/db.js';
 
 dotenv.config();
 
@@ -41,21 +41,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/meal-plans', mealPlanRoutes);
 app.use('/api/gemini', geminiRoutes);
-const MONGO_URI = process.env.MONGO_URI; // Load MongoDB URI from .env
 const PORT = process.env.PORT || 5000; // Load port from .env or default to 5000
 
-mongoose
-  .connect(MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("✅ Connected to MongoDB");
-  })
-  .catch((err) => {
-    console.error("❌ Failed to connect to MongoDB:", err.message);
-    process.exit(1); // Exit process on failure
-  });
+connectDB();
 
 // Start the server
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

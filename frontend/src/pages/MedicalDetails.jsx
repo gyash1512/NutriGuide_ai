@@ -149,6 +149,35 @@ const MedicalDetails = () => {
   const [aiSummary, setAiSummary] = useState("");
   const [loadingSummary, setLoadingSummary] = useState(false);
 
+  useEffect(() => {
+    const fetchMedicalProfile = async () => {
+      const email = auth.currentUser?.email;
+      if (!email) return;
+
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/medical-profile/${email}`);
+        const data = await response.json();
+        if (response.ok) {
+          const formattedData = {};
+          for (const test in data) {
+            const testName = Object.keys(bloodTestFields).find(key => bloodTestFields[key].table === test);
+            if (testName) {
+              formattedData[testName] = data[test];
+            }
+          }
+          setTestData(formattedData);
+          if (data.ai_health_summary) {
+            setAiSummary(data.ai_health_summary);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching medical profile:', error);
+      }
+    };
+
+    fetchMedicalProfile();
+  }, []);
+
   const handleSectionClick = (section) => {
     setActiveSection((prev) => (prev === section ? null : section)); // Toggle section
   };
