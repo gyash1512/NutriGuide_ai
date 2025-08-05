@@ -1,8 +1,10 @@
 # NutriGuide AI
 
-[![Build and deploy Node.js app to Azure Web App - nutriback](https://github.com/gyash1512/NutriGuide_ai/actions/workflows/main_nutriback.yml/badge.svg)](https://github.com/gyash1512/NutriGuide_ai/actions/workflows/main_nutriback.yml)
+[![Vercel Deployment](https://vercel.com/gyash1512/nutriguide-ai/badge)](https://nutriguideai.vercel.app/)
 
 NutriGuide AI is an intelligent nutrition assistant designed to provide personalized dietary guidance. It leverages the power of a powerful AI model to deliver meal plans, workout routines, and health summaries tailored to your unique medical data and preferences.
+
+**Live Demo:** [nutriguideai.vercel.app](https://nutriguideai.vercel.app/)
 
 ## Key Features
 
