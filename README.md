@@ -82,4 +82,4 @@ erDiagram
 
 ## Deployment
 
-The application is configured for continuous deployment to Azure Web App using GitHub Actions. The workflow is defined in `.github/workflows/main_nutriback.yml`.
+The application can be configured for continuous deployment to Azure Web App using GitHub Actions. The workflow can be defined in `.github/workflows/main_nutriback.yml`.
