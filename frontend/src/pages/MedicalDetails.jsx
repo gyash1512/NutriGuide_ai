@@ -155,7 +155,11 @@ const MedicalDetails = () => {
       if (!email) return;
 
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/medical-profile/${email}`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/medical-profile/${email}`, {
+          headers: {
+            'ngrok-skip-browser-warning': 'true',
+          },
+        });
         const data = await response.json();
         if (response.ok) {
           const formattedData = {};
