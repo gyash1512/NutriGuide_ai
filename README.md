@@ -1,6 +1,6 @@
 # NutriGuide AI
 
-[![Vercel Deployment](https://vercel.com/gyash1512/nutriguide-ai/badge)](https://nutriguideai.vercel.app/)
+[![Vercel Deployment](https://img.shields.io/badge/Vercel-nutriguideai.vercel.app-black?style=for-the-badge&logo=vercel)](https://nutriguideai.vercel.app/)
 
 NutriGuide AI is an intelligent nutrition assistant designed to provide personalized dietary guidance. It leverages the power of a powerful AI model to deliver meal plans, workout routines, and health summaries tailored to your unique medical data and preferences.
 
