@@ -1,11 +1,16 @@
 import MealPlan from '../models/MealPlan.js';
+import User from '../models/User.js';
 
 // Create a new meal plan
 export const createMealPlan = async (req, res) => {
   try {
     const { name, description, meals } = req.body;
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
     const mealPlan = new MealPlan({
-      user: req.user.id,
+      email: user.email,
       name,
       description,
       meals,
@@ -20,7 +25,11 @@ export const createMealPlan = async (req, res) => {
 // Get all meal plans for a user
 export const getMealPlans = async (req, res) => {
   try {
-    const mealPlans = await MealPlan.find({ user: req.user.id });
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    const mealPlans = await MealPlan.find({ email: user.email });
     res.json(mealPlans);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
@@ -31,7 +40,11 @@ export const getMealPlans = async (req, res) => {
 export const getMealPlanById = async (req, res) => {
   try {
     const mealPlan = await MealPlan.findById(req.params.id);
-    if (mealPlan && mealPlan.user.toString() === req.user.id) {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    if (mealPlan && mealPlan.email === user.email) {
       res.json(mealPlan);
     } else {
       res.status(404).json({ message: 'Meal plan not found' });
@@ -46,8 +59,12 @@ export const updateMealPlan = async (req, res) => {
   try {
     const { name, description, meals } = req.body;
     const mealPlan = await MealPlan.findById(req.params.id);
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
 
-    if (mealPlan && mealPlan.user.toString() === req.user.id) {
+    if (mealPlan && mealPlan.email === user.email) {
       mealPlan.name = name || mealPlan.name;
       mealPlan.description = description || mealPlan.description;
       mealPlan.meals = meals || mealPlan.meals;
@@ -66,7 +83,11 @@ export const updateMealPlan = async (req, res) => {
 export const deleteMealPlan = async (req, res) => {
   try {
     const mealPlan = await MealPlan.findById(req.params.id);
-    if (mealPlan && mealPlan.user.toString() === req.user.id) {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    if (mealPlan && mealPlan.email === user.email) {
       await mealPlan.deleteOne();
       res.json({ message: 'Meal plan removed' });
     } else {

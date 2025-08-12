@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { auth } from '../firebase';
+import { useAuth } from '../context/AuthContext';
 import Loader from '../components/Loader';
 
 const DietaryPage = () => {
@@ -12,11 +12,12 @@ const DietaryPage = () => {
   const [otherNotes, setOtherNotes] = useState('');
   const [dietPlan, setDietPlan] = useState('');
   const [loading, setLoading] = useState(false);
+  const { user, loading: authLoading } = useAuth();
 
   useEffect(() => {
     const fetchSavedDietPlan = async () => {
-      const email = auth.currentUser?.email;
-      if (!email) return;
+      if (!user) return;
+      const email = user.email;
 
       try {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/api/gemini/saved-diet-plan/${email}`, {
@@ -33,19 +34,19 @@ const DietaryPage = () => {
       }
     };
 
-    if (activeSection === 'recommendations') {
+    if (activeSection === 'recommendations' && user) {
       fetchSavedDietPlan();
     }
-  }, [activeSection]);
+  }, [activeSection, user]);
 
   const handleGetDietPlan = () => {
     setLoading(true);
-    const email = auth.currentUser?.email;
-    if (!email) {
-      alert("User email not found. Please log in again.");
+    if (!user) {
+      alert("User not found. Please log in again.");
       setLoading(false);
       return;
     }
+    const email = user.email;
 
     fetch(`${import.meta.env.VITE_API_URL}/api/gemini/get-diet-plan`, {
       method: 'POST',
@@ -191,6 +192,10 @@ const DietaryPage = () => {
       ),
     },
   ];
+
+  if (authLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="container mx-auto p-4">
