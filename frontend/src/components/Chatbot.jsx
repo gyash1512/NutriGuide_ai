@@ -87,20 +87,20 @@ const Chatbot = () => {
   return (
     <div className="fixed bottom-5 right-5 z-50">
       <button 
-        className="bg-blue-500 text-white rounded-full w-16 h-16 flex items-center justify-center text-2xl shadow-lg"
+        className="bg-purple-500 text-white rounded-full w-16 h-16 flex items-center justify-center text-2xl shadow-lg"
         onClick={toggleChat}
       >
         AI
       </button>
       {isOpen && (
         <div className="absolute bottom-20 right-0 w-96 h-[500px] bg-white rounded-lg shadow-lg flex flex-col">
-          <div className="bg-blue-500 text-white p-3 rounded-t-lg flex justify-between items-center">
+          <div className="bg-purple-500 text-white p-3 rounded-t-lg flex justify-between items-center">
             <h2 className="text-lg font-semibold">NutriGuide AI</h2>
             <button onClick={toggleChat} className="text-white text-xl">&times;</button>
           </div>
           <div className="flex-grow p-3 overflow-y-auto">
             {messages.map((msg, index) => (
-              <div key={index} className={`my-2 p-2 rounded-lg max-w-xs ${msg.role === 'user' ? 'bg-blue-500 text-white self-end ml-auto' : 'bg-gray-200 text-black self-start'}`}>
+              <div key={index} className={`my-2 p-2 rounded-lg max-w-xs ${msg.role === 'user' ? 'bg-purple-500 text-white self-end ml-auto' : 'bg-gray-200 text-black self-start'}`}>
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.parts[0].text}</ReactMarkdown>
               </div>
             ))}
@@ -118,7 +118,7 @@ const Chatbot = () => {
               placeholder="Ask something..."
               className="flex-grow border rounded-full py-2 px-4 mr-2"
             />
-            <button onClick={handleSendMessage} className="bg-blue-500 text-white rounded-full px-4 py-2">Send</button>
+            <button onClick={handleSendMessage} className="bg-purple-500 text-white rounded-full px-4 py-2">Send</button>
           </div>
         </div>
       )}
