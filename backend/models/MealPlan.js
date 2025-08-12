@@ -25,6 +25,9 @@ const mealPlanSchema = new mongoose.Schema({
       snacks: { type: String },
     },
   ],
+  plan: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

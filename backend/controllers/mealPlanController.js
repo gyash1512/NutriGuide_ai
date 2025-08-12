@@ -67,7 +67,7 @@ export const deleteMealPlan = async (req, res) => {
   try {
     const mealPlan = await MealPlan.findById(req.params.id);
     if (mealPlan && mealPlan.user.toString() === req.user.id) {
-      await mealPlan.remove();
+      await mealPlan.deleteOne();
       res.json({ message: 'Meal plan removed' });
     } else {
       res.status(404).json({ message: 'Meal plan not found' });
